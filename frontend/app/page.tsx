@@ -1,7 +1,8 @@
+import { WelcomeHeading } from "./components/welcome-heading";
 import { churchLinks } from "../lib/church-links";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowDown, ArrowUpRight, MapPin } from "lucide-react";
+import { ArrowDown, ArrowUpRight, MapPin, Youtube, Facebook } from "lucide-react";
 import { PhotoStories } from "./components/photo-stories";
 import { imagery } from "../lib/imagery";
 import { EventPoster, SectionLabel, TextLink } from "./components/page-elements";
@@ -10,7 +11,20 @@ export default function HomePage() {
   return <>
     <section className="home-hero">
       <div className="hero-photo"><Image {...imagery.hero} fill sizes="100vw" priority /></div>
-      <div className="wrap hero-content"><div className="hero-location"><span className="live-dot" />A CHURCH FAMILY IN ILORIN, NIGERIA</div><h1>WELCOME<br /><em>home.</em></h1><p>A place to know God.<br />A people to do life with.<br />A welcome with your name on it.</p><Link className="button button-red" href="/visit">Find your place here <ArrowUpRight size={19} /></Link><a href="#welcome" className="hero-scroll"><ArrowDown size={16} /> A little more about us</a></div>
+      <div className="wrap hero-content">
+        <div className="hero-location"><span className="live-dot" />A CHURCH FAMILY IN ILORIN, NIGERIA</div>
+        <WelcomeHeading />
+        <p>A place to know God.<br />A people to do life with.<br />A welcome with your name on it.</p>
+        <Link className="button button-red" href="/visit">Find your place here <ArrowUpRight size={19} /></Link>
+        <div className="hero-streaming">
+          <span className="eyebrow">JOIN US ONLINE</span>
+          <div className="streaming-actions">
+            <a className="streaming-button streaming-youtube" href={churchLinks.youtubeLive} target="_blank" rel="noopener noreferrer" aria-label="Watch on YouTube Live (opens in a new tab)"><Youtube size={20} aria-hidden="true" /><span>YouTube Live</span><ArrowUpRight size={16} aria-hidden="true" /></a>
+            <a className="streaming-button streaming-facebook" href={churchLinks.facebookLive} target="_blank" rel="noopener noreferrer" aria-label="Watch on Facebook Live (opens in a new tab)"><Facebook size={20} aria-hidden="true" /><span>Facebook Live</span><ArrowUpRight size={16} aria-hidden="true" /></a>
+          </div>
+        </div>
+        <a href="#welcome" className="hero-scroll"><ArrowDown size={16} /> A little more about us</a>
+      </div>
       <div className="hero-photo-caption">FAITH FINDS A VOICE.<br />COMMUNITY FINDS A HOME.</div>
       <Link className="hero-event-ticket" href="/events/african-praise"><span className="ticket-date">25<small>OCT ’26</small></span><span><small>COMING TO RHEMA</small><strong>African Praise</strong><span>Save the date. Bring someone.</span></span><ArrowUpRight size={26} /></Link>
     </section>
