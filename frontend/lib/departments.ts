@@ -1,0 +1,56 @@
+export type DepartmentPhoto = { src: string; alt: string };
+export type DepartmentLeader = { name: string; biography?: string; portrait?: DepartmentPhoto };
+export type Department = {
+  slug: string;
+  name: string;
+  summary: string;
+  description: string[];
+  activities: { title: string; description: string }[];
+  photos: DepartmentPhoto[];
+  hod: DepartmentLeader | null;
+  assistantHods: DepartmentLeader[];
+  meetingDetails: string | null;
+  joiningInformation: string | null;
+  dedicatedPage?: string;
+};
+
+// Names supplied by the owner. Descriptions and activities are editorial drafts
+// based on those names and need church review. Personnel and schedules stay null.
+const entries: Pick<Department, "slug" | "name" | "summary" | "description" | "activities">[] = [
+  { slug: "audio-visual", name: "Audio Visual", summary: "Supporting clear sound, visuals, and the church’s media experience.", description: ["Audio Visual brings sound and visual media into the life of our gatherings. Its focus is helping people follow, hear, and engage with what is being shared."], activities: [{ title: "Sound & visuals", description: "Supporting audio and visual presentation during church gatherings." }, { title: "Media support", description: "Contributing to the presentation and recording of church programmes." }] },
+  { slug: "technical", name: "Technical", summary: "Practical support for the equipment and systems behind church gatherings.", description: ["The Technical department contributes to the practical preparations behind church activities. It supports the equipment and arrangements that help gatherings run smoothly."], activities: [{ title: "Equipment preparation", description: "Helping prepare the equipment needed for services and programmes." }, { title: "Technical support", description: "Supporting the operation and care of church equipment." }] },
+  { slug: "it", name: "IT", summary: "Using technology to support church life and communication.", description: ["The IT department brings digital skills into service of the church. It helps connect the needs of church teams with useful technology and digital tools."], activities: [{ title: "Digital tools", description: "Supporting the use of technology by church teams." }, { title: "IT support", description: "Helping with digital systems and practical technology needs." }] },
+  { slug: "choir", name: "Choir", summary: "Lifting our voices together in praise and worship.", description: ["The Choir contributes music and singing to our gatherings. Its members bring their voices together to lead and participate in the church’s praise and worship."], activities: [{ title: "Praise & worship", description: "Leading singing and musical participation during gatherings." }, { title: "Musical preparation", description: "Preparing together for services and special programmes." }] },
+  { slug: "welcoming", name: "Welcoming", summary: "Helping visitors and members feel at home at Rhema.", description: ["The Welcoming department is part of the church’s first welcome. It offers a friendly point of connection for people arriving at our gatherings, especially those visiting for the first time."], activities: [{ title: "A friendly welcome", description: "Greeting people as they arrive for church gatherings." }, { title: "Visitor guidance", description: "Helping newcomers find their way and connect with church life." }] },
+  { slug: "welfare", name: "Welfare", summary: "Care, encouragement, and practical concern for the church family.", description: ["The Welfare department expresses care for people within the church community. Its work centres on concern, encouragement, and practical support."], activities: [{ title: "Community care", description: "Showing care and concern for members of the church family." }, { title: "Practical support", description: "Contributing to the church’s response to welfare needs." }] },
+  { slug: "intercessory", name: "Intercessory", summary: "Standing together in prayer for the church and its community.", description: ["The Intercessory department brings people together around prayer. It supports church life through prayer for people, gatherings, and the wider community."], activities: [{ title: "Shared prayer", description: "Praying together for the church and its gatherings." }, { title: "Prayer support", description: "Supporting people and church teams through intercession." }] },
+  { slug: "visitation", name: "Visitation", summary: "Maintaining connection through visits, care, and encouragement.", description: ["The Visitation department helps extend fellowship beyond church gatherings. Its focus is staying connected with people through visits and encouragement."], activities: [{ title: "Personal connection", description: "Maintaining contact and fellowship with the church family." }, { title: "Visits & encouragement", description: "Offering encouragement through the ministry of visitation." }] },
+  { slug: "ushering", name: "Ushering", summary: "Helping people find their place and participate in our gatherings.", description: ["The Ushering department offers practical assistance during services and programmes. It helps people find their way within the gathering and contributes to an orderly, welcoming experience."], activities: [{ title: "Gathering assistance", description: "Helping people with seating and directions during gatherings." }, { title: "Service support", description: "Providing practical assistance as church programmes take place." }] },
+  { slug: "security", name: "Security", summary: "Supporting an orderly and attentive environment at the church.", description: ["The Security department contributes to the care and order of the church environment. It helps church gatherings take place with attention to people and the venue."], activities: [{ title: "Venue support", description: "Helping maintain order around the church venue." }, { title: "Gathering support", description: "Supporting church teams with practical security responsibilities." }] },
+  { slug: "children-department", name: "Children Department", summary: "A place for the youngest members of our church family.", description: ["Children’s Church is part of Rhema Chapel Stadium Church. Its dedicated page brings together information for parents and families."], activities: [] },
+  { slug: "library", name: "Library", summary: "Making room for reading, learning, and shared resources.", description: ["The Library department supports reading and learning within church life. It brings attention to books and resources that can encourage study and growth."], activities: [{ title: "Reading & learning", description: "Encouraging engagement with books and learning resources." }, { title: "Resource care", description: "Helping organise and care for the church’s library resources." }] },
+];
+
+export const departments: Department[] = entries.map(entry => ({
+  ...entry,
+  photos: entry.slug === "choir" ? [
+    { src: "/images/church/choir.jpg", alt: "Rhema Chapel choir in blue and gold robes" },
+    { src: "/images/church/praise.jpg", alt: "Choir members singing during praise" },
+    { src: "/images/church/celebration.jpg", alt: "The choir leading worship on stage" },
+  ] : entry.slug === "intercessory" ? [
+    { src: "/images/church/intercessory.jpg", alt: "Rhema Chapel members praying together during a church gathering" },
+  ] : [],
+  hod: null,
+  assistantHods: [],
+  meetingDetails: null,
+  joiningInformation: null,
+  ...(entry.slug === "children-department" ? { dedicatedPage: "/children" } : {}),
+}));
+
+export function departmentHref(department: Department) {
+  return department.dedicatedPage ?? `/departments/${department.slug}`;
+}
+
+export function findDepartment(slug: string) {
+  return departments.find(department => department.slug === slug);
+}

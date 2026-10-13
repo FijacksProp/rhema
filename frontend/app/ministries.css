@@ -1,0 +1,126 @@
+/* Department directory, profiles, and Children's Church. */
+.social-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+.social-links a { display: inline-flex; align-items: center; gap: 11px; padding: 12px 15px; min-height: 44px; border: 1px solid #d3d5d9; border-radius: 8px; font-size: 12px; transition: background .2s; }
+.social-links a:hover { background: #b9876812; }
+.social-links-compact { gap: 10px; margin: 0; }
+.social-links-compact a { padding: 8px 10px; min-height: 40px; font-size: 11px; }
+.footer-bottom { align-items: center; }
+.footer-bottom .social-links a { border-color: #ffffff26; color: #d6dce6; }
+.directory-heading { display: flex; justify-content: space-between; align-items: end; gap: 40px; margin: 30px 0 35px; }
+.directory-heading > p { max-width: 410px; }
+.directory-search { max-width: 530px; margin-bottom: 15px; }
+.directory-search label { display: block; margin-bottom: 9px; font-size: 12px; font-weight: 600; }
+.directory-search > div { display: flex; align-items: center; gap: 13px; background: white; border: 1px solid var(--line); border-radius: 10px; padding: 0 16px; }
+.directory-search > div:focus-within { border-color: var(--navy); box-shadow: 0 0 0 3px #102d6f12; }
+.directory-search input { background: none; flex: 1; width: 100%; min-width: 0; border: 0; padding: 15px 0; font: inherit; font-size: 14px; color: var(--ink); outline: none; }
+.directory-search input::-webkit-search-cancel-button { display: none; }
+.directory-search button { background: none; display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 5px; }
+.directory-result { font-size: 12px; min-height: 20px; margin-bottom: 15px; }
+.departments-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 24px; }
+.department-directory-card { border: 1px solid #deded5; border-radius: 16px; overflow: hidden; background: white; transition: transform .25s,box-shadow .25s; }
+.department-directory-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px #1527440b; }
+.department-card-image { height: 210px; position: relative; }
+.department-card-image img { object-fit: cover; }
+.department-card-art { position: relative; background: #e5e6d8; min-height: 210px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; color: #264a42; overflow: hidden; }
+.department-card-art::before { content: ""; position: absolute; height: 170px; width: 170px; right: -65px; bottom: -60px; border: 1px solid currentColor; border-radius: 50%; opacity: .12; }
+.department-card-art > span { font-family: var(--serif); font-style: italic; font-size: 26px; letter-spacing: -.045em; position: relative; }
+.department-art-technical,.department-art-security { background: #dce3eb; color: #203b59; }
+.department-art-it,.department-art-library { background: #ece0cf; color: #624830; }
+.department-art-welcoming,.department-art-visitation { background: #e8dbd5; color: #774738; }
+.department-art-intercessory { background: #e4ddeb; color: #5b486e; }
+.department-art-children-department { background: #f8e1a5; color: #755123; }
+.department-card-copy { padding: 25px; }
+.department-card-copy h3 { font-family: var(--display); font-size: 35px; margin-bottom: 14px; }
+.department-card-copy p { font-size: 14px; }
+.department-card-copy .text-link { font-size: 12px; gap: 12px; margin-top: 20px; border-color: #c5c8cd; }
+.directory-update { padding: 24px; border: 1px solid #dcd8cc; background: #eeeae0; border-radius: 10px; margin-top: 30px; }
+.directory-update strong { font-size: 16px; font-weight: 500; }
+.directory-update p { font-size: 14px; margin-top: 8px; }
+.directory-no-results { padding: 35px; border: 1px solid var(--line); border-radius: 12px; }
+.directory-no-results p { margin: 15px 0 25px; }
+.department-activities { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 35px; }
+.department-activities article { border-left: 3px solid var(--red); padding-left: 24px; }
+.department-activities h3 { font-size: 25px; margin-bottom: 17px; }
+.department-team { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 24px; }
+.department-leader { background: var(--white); border: 1px solid #deded5; border-radius: 12px; padding: 28px; overflow: hidden; }
+.department-leader h3 { margin: 16px 0; font-size: 25px; }
+.department-leader p { font-size: 14px; }
+.department-leader .eyebrow { font-size: 10px; }
+.leader-symbol { width: 55px; height: 55px; display: grid; place-items: center; background: #ede9e0; color: #6c655c; border-radius: 50%; margin-bottom: 25px; }
+.leader-portrait { height: 280px; position: relative; margin: -28px -28px 25px; }
+.leader-portrait img { object-fit: cover; }
+.department-photo-notice { border: 1px dashed #bcbab0; border-radius: 14px; padding: 35px; }
+.department-photo-notice h3 { margin: 15px 0; font-family: var(--serif); font-style: italic; font-size: 35px; }
+.department-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.department-gallery figure { margin: 0; border-radius: 14px; overflow: hidden; }
+.department-gallery img { display: block; width: 100%; height: auto; }
+/* Children's Church has its own illustration until photos are supplied. */
+.children-hero { background: #e7ecdf; padding: 30px 0 65px; overflow: hidden; }
+.children-hero-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 8%; align-items: center; }
+.children-hero h1 { font-size: clamp(65px,7.4vw,110px); margin: 24px 0 30px; }
+.children-hero > .wrap > .breadcrumb { margin-bottom: 45px; }
+.children-hero-grid > div:first-child > p { max-width: 480px; font-size: 17px; }
+.children-hero-grid > div:first-child .button { margin-top: 25px; }
+.children-art { min-height: 425px; border-radius: 120px 120px 16px 16px; position: relative; background: #f1c981; overflow: hidden; isolation: isolate; }
+.children-orbit { position: absolute; width: 450px; height: 450px; border: 1px solid #946a3340; border-radius: 50%; right: -160px; top: -130px; z-index: -1; }
+.children-book { background: #faf8ed; color: #436854; width: 190px; height: 160px; position: absolute; left: 35px; top: 85px; transform: rotate(-12deg); display: grid; place-items: center; box-shadow: 8px 10px 0 #dba95d; border-radius: 18px; }
+.children-spark { position: absolute; top: 28px; left: 28px; color: #735525; }
+.children-heart { position: absolute; right: 40px; top: 100px; color: #9a4e3d; transform: rotate(14deg); }
+.children-art-type { position: absolute; left: 45px; bottom: 36px; font-family: var(--display); font-size: 47px; line-height: .93; color: #263e31; }
+.children-art-type em { font-family: var(--serif); font-size: 1.1em; display: block; margin: 10px 0 0 65px; }
+.children-parent-section { background: #ede8dd; padding-block: 70px; }
+.children-info-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; }
+.children-info-grid article { background: #fffdf7; border: 1px solid #dfd9cb; border-radius: 14px; padding: 26px; }
+.children-info-grid h3 { font-size: 23px; margin-bottom: 18px; }
+.pending-label { display: block; color: #876345; font-size: 10px; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 12px; }
+.children-info-grid p { font-size: 14px; }
+.children-parent-actions { display: flex; flex-wrap: wrap; gap: 30px; margin-top: 30px; }
+.children-team-heading { margin: 30px 0 35px; }
+.children-photo-soon { background: #e7ecdf; padding: 55px 40px; text-align: center; border-radius: 18px; }
+.children-photo-soon > svg { margin: 0 auto 20px; }
+.children-photo-soon .eyebrow { color: #42634d; }
+.children-photo-soon h2 { margin: 25px 0; font-size: 57px; }
+.home-children-teaser { padding: 45px; margin-block: 65px; background: #e7ecdf; border-radius: 18px; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
+.home-children-teaser h2 { margin: 20px 0; font-size: 55px; }
+.home-children-teaser .button { flex-shrink: 0; }
+@media(max-width:1100px) {
+  .departments-grid { gap: 18px; }
+  .department-card-copy { padding: 20px; }
+  .department-card-copy .text-link { font-size: 11px; }
+  .children-info-grid { grid-template-columns: 1fr 1fr; }
+  .children-art { min-height: 390px; }
+  .children-book { left: 26px; width: 160px; }
+  .children-heart { right: 25px; }
+}
+@media(max-width:760px) {
+  .directory-heading { display: block; }
+  .directory-heading > p { margin-top: 25px; }
+  .departments-grid,.department-team,.department-activities,.department-gallery { grid-template-columns: 1fr; }
+  .department-card-copy { padding: 25px; }
+  .department-card-copy .text-link { font-size: 13px; }
+  .department-card-art,.department-card-image { min-height: 230px; }
+  .department-card-copy h3 { font-size: 37px; }
+  .department-activities { gap: 30px; }
+  .children-hero { padding: 24px 0 45px; }
+  .children-hero > .wrap > .breadcrumb { margin-bottom: 30px; }
+  .children-hero-grid { grid-template-columns: 1fr; gap: 35px; }
+  .children-hero h1 { font-size: clamp(64px,14vw,90px); }
+  .children-art { min-height: 350px; max-width: 500px; width: 100%; }
+  .children-book { top: 75px; left: 40px; height: 130px; }
+  .children-book > svg { width: 100px; }
+  .children-art-type { font-size: 42px; left: 35px; bottom: 25px; }
+  .children-heart { right: 45px; top: 80px; }
+  .children-parent-section { padding-block: 50px; }
+  .children-info-grid { grid-template-columns: 1fr; gap: 14px; }
+  .children-info-grid article { padding: 25px; }
+  .children-parent-actions { gap: 16px; flex-direction: column; align-items: flex-start; }
+  .children-photo-soon { padding: 40px 23px; }
+  .children-photo-soon h2 { font-size: 48px; }
+  .home-children-teaser { padding: 30px; margin-block: 45px; display: block; }
+  .home-children-teaser .button { margin-top: 25px; }
+  .home-children-teaser h2 { font-size: 50px; }
+  .footer-bottom { align-items: flex-start; }
+  .footer-bottom .social-links { margin-top: 12px; }
+}
+@media(prefers-reduced-motion:reduce) { .department-directory-card:hover { transform: none; } }
+
