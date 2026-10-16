@@ -15,7 +15,7 @@ The visual design uses warm ivory, navy, and red, with editorial typography and 
 
 The stock photographs have been replaced with owner-supplied FIRST SUNDAY church photography (see `public/images/README.md`). The draft welcome copy still needs approval. Leadership profiles, department names, service times, contact channels and recordings are awaiting confirmed content. These pages do not invent that information or collect form submissions.
 
-The frontend is not connected to Django/Wagtail yet. Registration and check-in remain future work after committee requirements are confirmed.
+The frontend connects to Django/Wagtail through the server-side `DJANGO_API_BASE_URL` setting and `GET /api/church/`. Collections adopt CMS content independently when their index is first published. Existing UI content appears while initial CMS sections remain drafts. Draft/private pages never become published-content records. Registration and check-in are deferred unless requested by the church.
 
 ## October visual refresh
 
@@ -31,4 +31,12 @@ The department directory includes the 12 names supplied by the owner, search, an
 
 `/children` is the dedicated Children’s Church page, with its own visual treatment, parent guide, team section, and FAQs. Photographs and operational details are pending. `/departments/children-department` redirects to this page.
 
-Official map and social destinations are maintained in `lib/church-links.ts`.
+Official map and social destinations come from Wagtail Church details & links when connected; `lib/church-links.ts` supplies the standalone preview defaults.
+
+## CMS integration
+
+Copy `.env.example` to `.env.local`, run Django on `127.0.0.1:8000`, and run `npm.cmd run dev`. The API origin is server-only. Configured API failures are surfaced rather than silently restoring old content. New department, event, news, message and leadership routes work without a code change. Content revalidates approximately every minute. Uploaded images use Wagtail-generated renditions directly.
+
+Local development bypasses CMS fetch/HMR caching so a refreshed page shows the latest publication. Production retains approximately one-minute revalidation.
+
+See [the CMS editor guide](../docs/cms-editor-guide.md) for page types, staff roles, section adoption, previews and deployment configuration.

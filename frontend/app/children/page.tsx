@@ -1,16 +1,23 @@
+import { getChurchContent, contentLinks, cmsMetadata, getDepartments } from "../../lib/cms";
+import { InformationContent } from "../components/cms-content";
 import Link from "next/link";
 import { ArrowUpRight, BookOpen, Heart, Sparkles } from "lucide-react";
 import { findDepartment } from "../../lib/departments";
 import { DepartmentTeam } from "../components/department-elements";
-import { FAQ, SectionLabel, TextLink, mapUrl } from "../components/page-elements";
+import { FAQ, SectionLabel, TextLink } from "../components/page-elements";
 
-export const metadata = {
+const fallbackMetadata = {
   title: "Children’s Church",
   description: "Children’s Church at Rhema Chapel Stadium Church, Ilorin. Information for parents, families, and those interested in serving.",
 };
 
-export default function ChildrenPage() {
-  const department = findDepartment("children-department")!;
+export async function generateMetadata() { return cmsMetadata((await getChurchContent())?.pages.find(page => page.slug === "children"), fallbackMetadata); }
+export default async function ChildrenPage() {
+ const content = await getChurchContent();
+ const page = content?.pages.find(page => page.slug === "children");
+ if (content && page) return <InformationContent page={page} content={content} />;
+ const mapUrl = contentLinks(content).maps;
+  const department = (await getDepartments()).find(item => item.slug === "children-department") ?? { ...findDepartment("children-department")!, photos: [], hod: null, assistantHods: [] };
   return <>
     <section className="children-hero"><div className="wrap"><div className="breadcrumb"><Link href="/">Home</Link><span>/</span><Link href="/departments">Departments</Link><span>/</span><span>Children’s Church</span></div><div className="children-hero-grid"><div><span className="eyebrow">FOR OUR YOUNGEST CHURCH FAMILY</span><h1>Little hearts.<br /><em>Big faith.</em></h1><p>Welcome to Children’s Church at Rhema Chapel Stadium Church. A place in church life for children, and a starting point for families getting to know us.</p><a className="button button-ink" href="#parents">Information for parents <ArrowUpRight size={18} /></a></div><div className="children-art" aria-hidden="true"><span className="children-orbit" /><Sparkles className="children-spark" size={35} strokeWidth={1.3} /><div className="children-book"><BookOpen size={125} strokeWidth={1} /></div><Heart className="children-heart" size={42} strokeWidth={1.4} /><span className="children-art-type">GROW.<br />WONDER.<br /><em>Belong.</em></span></div></div></div></section>
     <section className="wrap editorial-section" data-reveal><SectionLabel number="01">CHILDREN’S CHURCH</SectionLabel><div className="editorial-grid"><h2>A place in<br /><em>the family.</em></h2><div className="prose"><p className="large-copy">Our church family includes its youngest members.</p><p>Children’s Church is part of Rhema Chapel Stadium Church. This page will help families learn about the ministry, its activities, and the people who lead it.</p><p>Detailed programme information will be shared as it is confirmed. If you’re planning a first visit, use the parent guide below to see which details are available.</p><TextLink href="/visit">Visit Rhema as a family</TextLink></div></div></section>

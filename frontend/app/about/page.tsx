@@ -1,10 +1,15 @@
+import { getChurchContent, contentLinks, cmsMetadata } from "../../lib/cms";
+import { InformationContent, StreamingLinks } from "../components/cms-content";
 import { imagery } from "../../lib/imagery";
 import Image from "next/image";
-import { Youtube, Facebook, ArrowUpRight } from "lucide-react";
-import { churchLinks } from "../../lib/church-links";
 import { PageIntro, SectionLabel, TextLink, VisitBand } from "../components/page-elements";
-export const metadata = { title: "Our church", description: "Get to know Rhema Chapel Stadium Church, a church family at Stadium Second Gate, Ilorin." };
-export default function AboutPage() {
+const fallbackMetadata = { title: "Our church", description: "Get to know Rhema Chapel Stadium Church, a church family at Stadium Second Gate, Ilorin." };
+export async function generateMetadata() { return cmsMetadata((await getChurchContent())?.pages.find(page => page.slug === "about"), fallbackMetadata); }
+export default async function AboutPage() {
+ const content = await getChurchContent();
+ const page = content?.pages.find(page => page.slug === "about");
+ if (content && page) return <InformationContent page={page} content={content} />;
+ const churchLinks = contentLinks(content);
  return <>
   <PageIntro className="about-intro" label="Our church" title="A church." accent="A family.">
     <p>We are Rhema Chapel Stadium Church, Ilorin. A place to come together in faith, make meaningful connections, and find your place in church life.</p>
@@ -12,10 +17,7 @@ export default function AboutPage() {
     <div className="about-streaming">
       <span className="eyebrow">WORSHIP WITH US ONLINE</span>
       <p>Join our services wherever you are.</p>
-      <div className="streaming-actions">
-        <a className="streaming-button streaming-youtube" href={churchLinks.youtubeLive} target="_blank" rel="noopener noreferrer" aria-label="Watch on YouTube Live (opens in a new tab)"><Youtube size={21} aria-hidden="true" /><span>YouTube Live</span><ArrowUpRight size={17} aria-hidden="true" /></a>
-        <a className="streaming-button streaming-facebook" href={churchLinks.facebookLive} target="_blank" rel="noopener noreferrer" aria-label="Watch on Facebook Live (opens in a new tab)"><Facebook size={20} aria-hidden="true" /><span>Facebook Live</span><ArrowUpRight size={17} aria-hidden="true" /></a>
-      </div>
+      <StreamingLinks links={churchLinks} />
       <small>Watch during our broadcasts, or explore previous services on our channels.</small>
     </div>
   </PageIntro>

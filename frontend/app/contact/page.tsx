@@ -1,7 +1,14 @@
+import { getChurchContent, cmsMetadata } from "../../lib/cms";
+import { InformationContent, ContactDetails } from "../components/cms-content";
 import { SocialLinks } from "../components/social-links";
 import { ArrowUpRight, MapPin, MessageCircle } from "lucide-react";
 import { PageIntro, SectionLabel, TextLink, mapUrl } from "../components/page-elements";
-export const metadata = { title: "Contact", description: "Location and contact information for Rhema Chapel Stadium Church, Stadium Second Gate, Ilorin." };
-export default function ContactPage() {
+const fallbackMetadata = { title: "Contact", description: "Location and contact information for Rhema Chapel Stadium Church, Stadium Second Gate, Ilorin." };
+export async function generateMetadata() { return cmsMetadata((await getChurchContent())?.pages.find(page => page.slug === "contact"), fallbackMetadata); }
+export default async function ContactPage() {
+ const content = await getChurchContent();
+ const page = content?.pages.find(page => page.slug === "contact");
+ if (content && page) return <InformationContent page={page} content={content} />;
+ if (content) return <><PageIntro label="Contact" title="Let’s start" accent="a conversation."><p>Find the church and connect with us through our official channels.</p></PageIntro><ContactDetails content={content} /></>;
  return <><PageIntro label="Contact" title="Let’s start" accent="a conversation."><p>Planning a visit, asking about a programme, or finding your next step? Here’s where to find us and the latest contact information.</p></PageIntro><section data-reveal className="wrap editorial-section"><SectionLabel number="01">GET IN TOUCH</SectionLabel><div className="contact-grid"><article><MapPin size={30} strokeWidth={1.4} /><h2>Find us<br /><em>in Ilorin.</em></h2><p>Rhema Chapel Stadium Church<br />Stadium Second Gate<br />Ilorin, Kwara State, Nigeria</p><a className="text-link" href={mapUrl} target="_blank" rel="noreferrer">Open church location <ArrowUpRight size={19} /></a></article><article><MessageCircle size={30} strokeWidth={1.4} /><h2>Say<br /><em>hello.</em></h2><p>Connect with the church on YouTube, Facebook, and Instagram. Phone, email, and office hours will be shared once confirmed.</p><SocialLinks /><div className="content-note"><h3>More contact details coming soon</h3><p>This website is not currently accepting messages or prayer requests through an online form.</p></div></article></div></section><section data-reveal className="paper-section"><div className="wrap editorial-grid"><h2>Looking for<br /><em>something specific?</em></h2><div className="link-stack"><TextLink href="/visit">First visit & directions</TextLink><TextLink href="/events/african-praise">African Praise information</TextLink><TextLink href="/departments">Departments & serving</TextLink><TextLink href="/services">Service information</TextLink></div></div></section></>;
 }

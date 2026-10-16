@@ -12,7 +12,7 @@ export function TextLink({ href, children }: { href: string; children: ReactNode
   return <Link className="text-link" href={href}>{children}<ArrowUpRight size={19} aria-hidden="true" /></Link>;
 }
 
-export function PageIntro({ label, title, accent, children, className = "" }: { label: string; title: string; accent: string; children: ReactNode; className?: string }) {
+export function PageIntro({ label, title, accent, children, className = "", photo: suppliedPhoto }: { label: string; title: string; accent: string; children: ReactNode; className?: string; photo?: { src: string; alt: string } }) {
   const photos: Record<string, typeof imagery.gathering> = {
     "Our church": imagery.gathering, Leadership: imagery.teaching,
     Departments: imagery.choir, Messages: imagery.teaching,
@@ -21,8 +21,8 @@ export function PageIntro({ label, title, accent, children, className = "" }: { 
     Contact: imagery.reflection,
     Intercessory: { src: "/images/church/intercessory.jpg", alt: "Rhema Chapel members praying together during a church gathering", style: { objectPosition: "58% 44%" } },
   };
-  const photo = photos[label] ?? imagery.gathering;
-  return <section className={`page-intro ${className}`}><div className="intro-photo"><Image {...photo} fill sizes="(max-width: 760px) 100vw, 55vw" priority /></div><div className="wrap"><div className="breadcrumb"><Link href="/">Home</Link><span>/</span><span>{label}</span></div><div className="intro-grid"><div><p className="eyebrow">Rhema Chapel · Stadium Church</p><h1>{title}<br /><em>{accent}</em></h1></div><div className="intro-description">{children}</div></div></div></section>;
+  const photo = suppliedPhoto ? { src: suppliedPhoto.src, alt: suppliedPhoto.alt } : photos[label] ?? imagery.gathering;
+  return <section className={`page-intro ${className}`}><div className="intro-photo"><Image {...photo} unoptimized={Boolean(suppliedPhoto)} fill sizes="(max-width: 760px) 100vw, 55vw" priority /></div><div className="wrap"><div className="breadcrumb"><Link href="/">Home</Link><span>/</span><span>{label}</span></div><div className="intro-grid"><div><p className="eyebrow">Rhema Chapel · Stadium Church</p><h1>{title}<br /><em>{accent}</em></h1></div><div className="intro-description">{children}</div></div></div></section>;
 }
 
 export function SectionLabel({ number, children }: { number: string; children: ReactNode }) {

@@ -22,7 +22,7 @@ export function DepartmentsDirectory({ departments }: { departments: Department[
     <div className="departments-grid">{matches.map(department => {
       const Icon = icons[department.slug] ?? BookOpen;
       return <Link className="department-directory-card" href={departmentHref(department)} key={department.slug}>
-      {department.photos[0] ? <div className="department-card-image"><Image {...department.photos[0]} fill sizes="(max-width:760px) 100vw, 33vw" /></div> : <div className={`department-card-art department-art-${department.slug}`}><Icon size={48} strokeWidth={1.3} aria-hidden="true" /><span>{department.dedicatedPage === "/children" ? "Little hearts. Big faith." : department.name}</span></div>}
+      {department.photos[0] ? <div className="department-card-image"><Image src={department.photos[0].src} alt={department.photos[0].alt} unoptimized={department.photos[0].src.startsWith("http")} fill sizes="(max-width:760px) 100vw, 33vw" /></div> : <div className={`department-card-art department-art-${department.slug}`}><Icon size={48} strokeWidth={1.3} aria-hidden="true" /><span>{department.dedicatedPage === "/children" ? "Little hearts. Big faith." : department.name}</span></div>}
       <div className="department-card-copy"><h3>{department.name}</h3><p>{department.summary}</p><span className="text-link">Explore {department.name} <ArrowUpRight size={18} /></span></div>
     </Link>; })}</div>
     {!matches.length && <div className="directory-no-results"><h3>No matching departments</h3><p>Try another name or clear your search.</p><button className="button button-ink" onClick={() => setQuery("")}>Show all departments</button></div>}

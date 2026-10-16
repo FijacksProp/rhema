@@ -1,10 +1,11 @@
-export type DepartmentPhoto = { src: string; alt: string };
-export type DepartmentLeader = { name: string; biography?: string; portrait?: DepartmentPhoto };
+export type DepartmentPhoto = { src: string; alt: string; caption?: string };
+export type DepartmentLeader = { name: string; biography?: string; biographyHtml?: string; portrait?: DepartmentPhoto; href?: string };
 export type Department = {
   slug: string;
   name: string;
   summary: string;
   description: string[];
+  descriptionHtml?: string;
   activities: { title: string; description: string }[];
   photos: DepartmentPhoto[];
   hod: DepartmentLeader | null;

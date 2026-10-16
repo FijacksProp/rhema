@@ -23,7 +23,7 @@ A welcoming, content-rich public website and community hub for Rhema Chapel Stad
 2. Add the remaining public templates: About, Leadership, Ministries, Services, Media, News, Get Involved, and Visit.
 3. Build Wagtail page types and editor roles so approved church staff can manage content.
 4. Connect the Next.js server-rendered pages to the Django/Wagtail API.
-5. Add African Praise registration and staff check-in after the committee confirms fields, attendance expectations, and day-of workflow.
+5. Prepare content, editorial accounts, hosting and production configuration for the church site. Event registration and staff check-in are deferred unless the church requests them; the existing African Praise coverage is sufficient for this milestone.
 
 ## Public UI implementation — September 2026
 
@@ -49,7 +49,7 @@ The website now has dedicated routes for:
 
 The supplied logo is integrated. The redesign uses a shared responsive navigation, editorial page layouts, an original event poster treatment, native FAQ disclosures, map search links, and a custom not-found page. The site now uses owner-supplied FIRST SUNDAY photographs in its hero, cards, gallery, and page headers.
 
-Missing church details remain explicitly pending. Individual leader and department pages should be populated from confirmed records rather than fabricated profiles. CMS integration, registration, and check-in are not implemented by this UI milestone.
+Missing church details remain explicitly pending. Individual leader and department pages should be populated from confirmed records rather than fabricated profiles. The later CMS milestone below adds content management; registration and check-in remain deferred.
 
 ## Content entities
 
@@ -61,6 +61,14 @@ Missing church details remain explicitly pending. Individual leader and departme
 - **News story:** title, type, publication date, summary, body, image.
 - **Registration:** event, attendee fields selected by the committee, registration status, unique reference.
 - **Check-in:** registration, arrival status/time, band issued status, staff operator.
+
+## CMS implementation — October 2026
+
+Wagtail now manages church settings, the homepage, five information pages, departments and their teams/photos, services, leadership, events, messages and news. A published-content API connects those records to Next.js with independently adopted sections and approximately one-minute revalidation. Existing frontend content remains available while initial section drafts are prepared. After adoption, unpublishing a section or record does not restore its old local list.
+
+The setup command creates the twelve confirmed department names as drafts and preserves existing edits on reruns. Church Editors and Church Publishers groups and a page-review workflow are included. Staff login, draft previews, image management and revisions use Wagtail. Profile publication approval is enforced in public APIs and department team relations.
+
+See [CMS editor guide](cms-editor-guide.md) for setup, section adoption, account roles, publishing, preview limitations and deployment configuration.
 
 ## Editorial and privacy rules
 

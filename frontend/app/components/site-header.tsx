@@ -3,17 +3,23 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowUpRight, Menu, X } from "lucide-react";
+import { ArrowUpRight, ChevronDown, Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { SocialLinks } from "./social-links";
+import type { ChurchLinks } from "../../lib/cms";
 
-const links = [["Our church", "/about"], ["Leadership", "/leadership"], ["Departments", "/departments"], ["What's on", "/events"], ["Messages", "/messages"]];
-const mobileLinks = [...links, ["Children’s Church", "/children"], ["Services", "/services"], ["News & stories", "/news"], ["Get involved", "/get-involved"], ["Contact", "/contact"]];
+const navigationGroups = [
+  { label: "Our church", description: "Get to know the Rhema family.", links: [["About Rhema", "/about"], ["Leadership", "/leadership"], ["Departments", "/departments"], ["Children’s Church", "/children"]] },
+  { label: "Gather with us", description: "Find your place in church life.", links: [["Services", "/services"], ["What's on", "/events"], ["Get involved", "/get-involved"]] },
+  { label: "Watch & read", description: "Stay connected throughout the week.", links: [["Messages", "/messages"], ["News & stories", "/news"]] },
+];
+const mobileLinks = [...navigationGroups.flatMap(group => group.links), ["Contact", "/contact"]];
 
-export function SiteHeader() {
+export function SiteHeader({ links, announcement }: { links?: ChurchLinks; announcement?: { text: string; url: string } }) {
   const pathname = usePathname();
   const menu = useRef<HTMLDetailsElement>(null);
   const summary = useRef<HTMLElement>(null);
+  const desktopNavigation = useRef<HTMLElement>(null);
   const [open, setOpen] = useState(false);
 
   function closeMenu(restoreFocus = false) {
@@ -24,7 +30,25 @@ export function SiteHeader() {
 
   useEffect(() => {
     closeMenu();
+    desktopNavigation.current?.querySelectorAll("details").forEach(item => { item.open = false; });
   }, [pathname]);
+
+  useEffect(() => {
+    function dismissDropdowns(event: PointerEvent | KeyboardEvent) {
+      if (event instanceof KeyboardEvent && event.key !== "Escape") return;
+      if (event instanceof PointerEvent && desktopNavigation.current?.contains(event.target as Node)) return;
+      desktopNavigation.current?.querySelectorAll<HTMLDetailsElement>("details[open]").forEach(item => {
+        item.open = false;
+        if (event instanceof KeyboardEvent) item.querySelector("summary")?.focus();
+      });
+    }
+    document.addEventListener("pointerdown", dismissDropdowns);
+    document.addEventListener("keydown", dismissDropdowns);
+    return () => {
+      document.removeEventListener("pointerdown", dismissDropdowns);
+      document.removeEventListener("keydown", dismissDropdowns);
+    };
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -60,11 +84,17 @@ export function SiteHeader() {
 
   return <>
     <a className="skip-link" href="#main-content">Skip to content</a>
-    <div className="announcement"><div className="wrap announcement-inner"><span>African Praise is coming <span className="announcement-dot">•</span> 25 October 2026</span><Link href="/events/african-praise">Save the date <ArrowUpRight size={14} /></Link></div></div>
+    {announcement ? announcement.text && <div className="announcement"><div className="wrap announcement-inner"><span>{announcement.text}</span>{announcement.url && <Link href={announcement.url}>Find out more <ArrowUpRight size={14} /></Link>}</div></div> : <div className="announcement"><div className="wrap announcement-inner"><span>African Praise is coming <span className="announcement-dot">•</span> 25 October 2026</span><Link href="/events/african-praise">Save the date <ArrowUpRight size={14} /></Link></div></div>}
     <header className="site-header">
       <div className="wrap header-inner">
         <Link className="brand" href="/" onClick={() => closeMenu()} aria-label="Rhema Chapel Stadium Church home"><Image src="/images/rhema-logo.png" width={609} height={410} alt="Rhema Chapel" priority /><span>STADIUM CHURCH<small>ILORIN, NIGERIA</small></span></Link>
-        <nav className="desktop-nav" aria-label="Main navigation">{links.map(([label, href]) => <Link key={href} href={href} aria-current={pathname.startsWith(href) ? "page" : undefined}>{label}</Link>)}</nav>
+        <nav ref={desktopNavigation} className="desktop-nav" aria-label="Main navigation">
+          {navigationGroups.map(group => <details key={group.label} name="desktop-navigation" className="nav-group" onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) event.currentTarget.open = false; }}>
+            <summary className={group.links.some(([, href]) => pathname.startsWith(href)) ? "nav-group-active" : undefined}>{group.label}<ChevronDown size={14} aria-hidden="true" /></summary>
+            <div className="nav-dropdown"><p>{group.description}</p>{group.links.map(([label, href]) => <Link key={href} href={href} onClick={() => { desktopNavigation.current?.querySelectorAll("details").forEach(item => { item.open = false; }); }} aria-current={pathname.startsWith(href) ? "page" : undefined}>{label}<ArrowUpRight size={15} aria-hidden="true" /></Link>)}</div>
+          </details>)}
+          <Link href="/contact" aria-current={pathname === "/contact" ? "page" : undefined}>Contact</Link>
+        </nav>
         <Link className="button button-ink header-cta" href="/visit">Plan your visit <ArrowUpRight size={16} /></Link>
         <details className="mobile-menu" ref={menu} onToggle={event => setOpen(event.currentTarget.open)}>
           <summary ref={summary} className="menu-toggle" aria-controls="mobile-navigation"><Menu className="menu-open-icon" size={22} /><X className="menu-close-icon" size={22} /><span className="sr-only">Toggle navigation menu</span></summary>
@@ -73,7 +103,7 @@ export function SiteHeader() {
             <nav id="mobile-navigation" className="mobile-nav" aria-label="Mobile navigation">
               {mobileLinks.map(([label, href], index) => <Link key={href} href={href} onClick={() => closeMenu()} aria-current={pathname.startsWith(href) ? "page" : undefined}><span className="menu-link-number">{String(index + 1).padStart(2, "0")}</span><span>{label}</span><ArrowUpRight size={19} /></Link>)}
             </nav>
-            <div className="mobile-menu-bottom"><Link className="button button-red" href="/visit" onClick={() => closeMenu()}>Come worship with us <ArrowUpRight size={19} /></Link><SocialLinks compact /></div>
+            <div className="mobile-menu-bottom"><Link className="button button-red" href="/visit" onClick={() => closeMenu()}>Come worship with us <ArrowUpRight size={19} /></Link><SocialLinks compact links={links} /></div>
           </div>
         </details>
       </div>
