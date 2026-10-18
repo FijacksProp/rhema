@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from urllib.parse import urlsplit
 from django.conf import settings
 from django.contrib.auth.models import Group, Permission
 from django.core.files import File
@@ -39,13 +40,22 @@ class Command(BaseCommand):
         if not home:
             home = Page.get_first_root_node().add_child(instance=HomePage(title="Rhema Chapel Stadium Church", slug="rhema", intro="A place to know God.\nA people to do life with.\nA welcome with your name on it."))
             home.save_revision().publish()
+        site_url = urlsplit(settings.WAGTAILADMIN_BASE_URL)
+        site_host = site_url.hostname or "localhost"
+        site_port = site_url.port or (443 if site_url.scheme == "https" else 8000)
         site = Site.objects.filter(is_default_site=True).first()
         if site and site.root_page.specific_class is not HomePage:
             site.root_page = home
             site.site_name = "Rhema Chapel Stadium Church"
+            site.hostname = site_host
+            site.port = site_port
             site.save()
         elif not site:
-            Site.objects.create(hostname="localhost", port=8000, root_page=home, is_default_site=True, site_name=home.title)
+            Site.objects.create(hostname=site_host, port=site_port, root_page=home, is_default_site=True, site_name=home.title)
+        elif site.hostname != site_host or site.port != site_port:
+            site.hostname = site_host
+            site.port = site_port
+            site.save(update_fields=["hostname", "port"])
 
         indexes = {}
         for key, model, title in [("events", EventIndexPage, "Events & programmes"), ("services", ServiceIndexPage, "Services"), ("leadership", PeopleIndexPage, "Leadership"), ("departments", MinistryIndexPage, "Departments"), ("messages", MessageIndexPage, "Messages"), ("news", NewsIndexPage, "News & stories")]:

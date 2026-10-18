@@ -15,6 +15,10 @@ export const metadata: Metadata = {
   },
   description:
     "Welcome to Rhema Chapel Stadium Church, Ilorin. Find upcoming events, church information, and ways to connect.",
+  robots: {
+    index: process.env.PUBLIC_SITE_INDEXABLE === "true",
+    follow: process.env.PUBLIC_SITE_INDEXABLE === "true",
+  },
 };
 
 export const revalidate = 60;

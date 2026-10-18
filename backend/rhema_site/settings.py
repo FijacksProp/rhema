@@ -2,11 +2,20 @@ import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-DEBUG = os.environ.get("DJANGO_DEBUG", "true").lower() == "true"
+ON_VERCEL = bool(os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"))
+DEBUG = os.environ.get("DJANGO_DEBUG", "false" if ON_VERCEL else "true").lower() == "true"
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-only-change-before-deployment" if DEBUG else "")
 if not SECRET_KEY:
     raise RuntimeError("Set DJANGO_SECRET_KEY before running with DJANGO_DEBUG=false.")
 ALLOWED_HOSTS = [host.strip() for host in os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if host.strip()]
+VERCEL_HOSTS = [os.environ[name].strip() for name in ("VERCEL_URL", "VERCEL_BRANCH_URL", "VERCEL_PROJECT_PRODUCTION_URL") if os.environ.get(name)]
+ALLOWED_HOSTS.extend(host for host in VERCEL_HOSTS if host not in ALLOWED_HOSTS)
+CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if origin.strip()]
+CSRF_TRUSTED_ORIGINS.extend(f"https://{host}" for host in VERCEL_HOSTS if f"https://{host}" not in CSRF_TRUSTED_ORIGINS)
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+SECURE_SSL_REDIRECT = os.environ.get("DJANGO_SECURE_SSL_REDIRECT", "true" if ON_VERCEL else "false").lower() == "true"
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -33,6 +42,9 @@ INSTALLED_APPS = [
     "rest_framework",
     "content",
 ]
+
+if os.environ.get("AWS_STORAGE_BUCKET_NAME"):
+    INSTALLED_APPS.append("storages")
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -62,7 +74,11 @@ TEMPLATES = [{
 WSGI_APPLICATION = "rhema_site.wsgi.application"
 ASGI_APPLICATION = "rhema_site.asgi.application"
 
-if os.environ.get("POSTGRES_DB"):
+if os.environ.get("DATABASE_URL"):
+    import dj_database_url
+
+    DATABASES = {"default": dj_database_url.parse(os.environ["DATABASE_URL"], conn_max_age=0 if ON_VERCEL else 60)}
+elif os.environ.get("POSTGRES_DB"):
     DATABASES = {"default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": os.environ["POSTGRES_DB"],
@@ -70,10 +86,36 @@ if os.environ.get("POSTGRES_DB"):
         "PASSWORD": os.environ.get("POSTGRES_PASSWORD", ""),
         "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
         "PORT": os.environ.get("POSTGRES_PORT", "5432"),
-        "CONN_MAX_AGE": 60,
+        "CONN_MAX_AGE": 0 if ON_VERCEL else 60,
     }}
 else:
     DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": BASE_DIR / "db.sqlite3"}}
+
+if ON_VERCEL and DATABASES["default"]["ENGINE"] == "django.db.backends.sqlite3":
+    raise RuntimeError("Set DATABASE_URL to persistent PostgreSQL before deploying the CMS on Vercel.")
+
+if os.environ.get("AWS_STORAGE_BUCKET_NAME"):
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+                "bucket_name": os.environ["AWS_STORAGE_BUCKET_NAME"],
+                "region_name": os.environ.get("AWS_S3_REGION_NAME", "auto"),
+                "endpoint_url": os.environ.get("AWS_S3_ENDPOINT_URL") or None,
+                "custom_domain": os.environ.get("AWS_S3_CUSTOM_DOMAIN") or None,
+                "url_protocol": "https:",
+                "querystring_auth": False,
+                "file_overwrite": False,
+                "object_parameters": {"CacheControl": "public, max-age=86400"},
+            },
+        },
+        "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
+    }
+
+if ON_VERCEL and not os.environ.get("AWS_STORAGE_BUCKET_NAME"):
+    raise RuntimeError("Set AWS_STORAGE_BUCKET_NAME to persistent media storage before deploying the CMS on Vercel.")
+if ON_VERCEL and not os.environ.get("AWS_S3_CUSTOM_DOMAIN"):
+    raise RuntimeError("Set AWS_S3_CUSTOM_DOMAIN to a public HTTPS media host before deploying the CMS on Vercel.")
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},

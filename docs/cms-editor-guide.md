@@ -81,6 +81,6 @@ For leadership profiles, check **Publication approved** only after the church ha
 
 Set Django's `PUBLIC_SITE_URL` to the final Next.js origin so View live and rich-text page links open the public website. Set `WAGTAILADMIN_BASE_URL` to the backend origin. `PUBLIC_MEDIA_BASE_URL` is an optional media origin; when omitted, image URLs use the request origin. `DJANGO_API_BASE_URL` is private server configuration in Next.js and must point to the backend origin accessible to the Next.js server.
 
-Use PostgreSQL in the deployed environment, supply `DJANGO_SECRET_KEY`, disable debug, configure allowed hosts/HTTPS, and provide persistent media storage. Hosting configuration and deployment are a separate milestone.
+Use PostgreSQL in the deployed environment, supply `DJANGO_SECRET_KEY`, disable debug, configure allowed hosts/HTTPS, and provide persistent media storage. See [the Vercel preview guide](vercel-preview.md) for the project layout and environment setup.
 
 Reference: [Wagtail page models](https://docs.wagtail.org/en/stable/topics/pages.html), [Wagtail settings](https://docs.wagtail.org/en/stable/reference/contrib/settings.html).

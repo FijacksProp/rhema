@@ -2,17 +2,17 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_GET
-from wagtail.models import Page, Site
+from wagtail.models import Page
 from .models import ChurchSettings, HomePage, InformationPage, EventPage, ServicePage, PersonPage, MinistryPage, MessagePage, NewsPage, EventIndexPage, ServiceIndexPage, PeopleIndexPage, MinistryIndexPage, MessageIndexPage, NewsIndexPage
 from .serializers import serialize_page
-from .public import published_pages
+from .public import church_site_for_request, published_pages
 
 
 @require_GET
 @cache_control(public=True, max_age=60)
 def public_content(request):
     """One public contract for Next.js. Drafts and restricted ancestors are excluded."""
-    site = Site.find_for_request(request)
+    site = church_site_for_request(request)
     if not site:
         return JsonResponse({"error": "No Wagtail site is configured."}, status=503)
     pages = published_pages(site.root_page)

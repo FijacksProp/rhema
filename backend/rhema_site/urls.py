@@ -5,15 +5,14 @@ from django.urls import include, path
 from wagtail.api.v2.views import PagesAPIViewSet
 from wagtail.api.v2.router import WagtailAPIRouter
 from content.views import public_content
-from content.public import published_pages
+from content.public import church_site_for_request, published_pages
 from content.models import PersonPage
-from wagtail.models import Site
 
 
 class ChurchPagesAPIViewSet(PagesAPIViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
-        site = Site.find_for_request(self.request)
+        site = church_site_for_request(self.request)
         if not site:
             return queryset.none()
         return queryset.filter(pk__in=published_pages(site.root_page).values("pk")).exclude(pk__in=PersonPage.objects.filter(publication_approved=False).values("pk"))

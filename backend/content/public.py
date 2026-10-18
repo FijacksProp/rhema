@@ -1,4 +1,10 @@
-from wagtail.models import Page
+from wagtail.models import Page, Site
+
+
+def church_site_for_request(request):
+    # Preview deployments have a new hostname on each build. This project has a
+    # single church site, so resolve unmatched deployment aliases to its default.
+    return Site.find_for_request(request) or Site.objects.filter(is_default_site=True).first()
 
 
 def published_pages(root):

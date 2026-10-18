@@ -12,10 +12,15 @@ backend/__pycache__/
 backend/**/__pycache__/
 backend/*.py[cod]
 backend/db.sqlite3
-backend/.env
 backend/media/
 backend/staticfiles/
 backend/.pytest_cache/
+
+# Local environment and Vercel project files
+backend/.env*
+!backend/.env.example
+frontend/.vercel/
+backend/.vercel/
 
 # Local editor and operating system files
 .DS_Store
